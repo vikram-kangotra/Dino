@@ -60,3 +60,7 @@ body {
     bottom: 0;
 }
 
+.dark-mode{
+    background-color: #000;
+    color: #fff;
+}

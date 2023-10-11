@@ -10,6 +10,11 @@ const worldElem = document.querySelector('[data-world]')
 const scoreElem = document.querySelector('[data-score]')
 const startScreenElem = document.querySelector('[data-start-screen]')
 
+function darkMode() {
+    let element = document.body;
+    element.classList.toggle("dark-mode")
+}
+
 setPixelToWorldScale()
 window.addEventListener('resize', setPixelToWorldScale)
 document.addEventListener('keydown', handleStart, { once: true })
@@ -71,6 +76,14 @@ function updateSpeedScale(delta) {
 function updateScore(delta) {
     score += delta * 0.01;
     scoreElem.textContent = Math.floor(score);
+
+    if (Math.floor(score) % 200 === 0) {
+        if (Math.floor(score / 200) % 2 === 0) {
+            document.body.classList.remove('dark-mode');
+        } else {
+            document.body.classList.add('dark-mode');
+        }
+    }
 }
 
 function handleStart() {
