@@ -10,6 +10,12 @@ const worldElem = document.querySelector('[data-world]')
 const scoreElem = document.querySelector('[data-score]')
 const startScreenElem = document.querySelector('[data-start-screen]')
 
+const highScoreElem = document.querySelector('[data-high-score]')
+let highScore = parseInt(localStorage.getItem('highScore'), 10) || 0;
+if (highScore > 0) {
+    highScoreElem.textContent = highScore;
+}
+
 setPixelToWorldScale()
 window.addEventListener('resize', setPixelToWorldScale)
 document.addEventListener('keydown', handleStart, { once: true })
@@ -73,6 +79,14 @@ function updateScore(delta) {
     scoreElem.textContent = Math.floor(score);
 }
 
+function updateHighScore() {
+    if (score > highScore) {
+        highScore = Math.floor(score);
+        localStorage.setItem('highScore', highScore);
+        highScoreElem.textContent = highScore;
+    }
+}
+
 function handleStart() {
     lastTime = null;
     speedScale = 1;
@@ -86,6 +100,7 @@ function handleStart() {
 
 function handleLose() {
     setDinoLose();
+    updateHighScore();
     setTimeout(() => {
         document.addEventListener('keydown', handleStart, { once: true });
         startScreenElem.classList.remove('hide');
