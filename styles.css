@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'ZX Spectrum';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/assets/zx-spectrum.ttf) format('truetype');
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
     user-select: none;
@@ -9,6 +17,11 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    color: #535353;
+    font-family: 'ZX Spectrum', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: clamp(1rem, 4vmin, 2rem);
+    letter-spacing: -0.2em;
     transition: all 0.4s ease-in-out;
 }
 
@@ -19,16 +32,19 @@ body {
     height: 200px;
 }
 
-.score {
+.score-container {
+    text-align: right;
     position: absolute;
-    font-size: 3vmin;
-    right: 1vmin;
+    right: 5vmin;
     top: 1vmin;
+}
+
+.high-score {
+    opacity: 0.5;
 }
 
 .start-screen {
     position: absolute;
-    font-size: 5vmin;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

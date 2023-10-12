@@ -6,18 +6,28 @@ const WORLD_WIDTH = 100;
 const WORLD_HEIGHT = 30;
 const SPEED_SCALE_INCREASE = 0.00001;
 
-const worldElem = document.querySelector('[data-world]')
-const scoreElem = document.querySelector('[data-score]')
-const startScreenElem = document.querySelector('[data-start-screen]')
+const worldElem = document.querySelector('[data-world]');
+const scoreElem = document.querySelector('[data-score]');
+const startScreenElem = document.querySelector('[data-start-screen]');
+const highScoreElem = document.querySelector('[data-high-score]');
+
+let lastTime;
+let speedScale;
+let highScore;
+let score;
+
+setPixelToWorldScale();
+updateHighScore();
 
 function darkMode() {
     let element = document.body;
-    element.classList.toggle("dark-mode")
+    element.classList.toggle("dark-mode");
 }
 
-setPixelToWorldScale()
-window.addEventListener('resize', setPixelToWorldScale)
-document.addEventListener('keydown', handleStart, { once: true })
+setPixelToWorldScale();
+
+window.addEventListener('resize', setPixelToWorldScale);
+document.addEventListener('keydown', handleStart, { once: true });
 
 function setPixelToWorldScale() {
     let worldToPixelScale;
@@ -31,9 +41,6 @@ function setPixelToWorldScale() {
     worldElem.style.height = `${WORLD_HEIGHT * worldToPixelScale}px`;
 }
 
-let lastTime;
-let speedScale;
-let score;
 function update(time) {
     if (lastTime == null) {
         lastTime = time;
@@ -86,6 +93,21 @@ function updateScore(delta) {
     }
 }
 
+function updateHighScore() {
+    if (highScore === undefined) {
+        highScore = parseInt(localStorage.getItem('highScore'), 10) || 0;
+    }
+
+    if (score > highScore) {
+        highScore = Math.floor(score);
+        localStorage.setItem('highScore', highScore);
+    }
+
+    if (highScore > 0) {
+        highScoreElem.textContent = 'HI:' + highScore;
+    }
+}
+
 function handleStart() {
     lastTime = null;
     speedScale = 1;
@@ -99,6 +121,7 @@ function handleStart() {
 
 function handleLose() {
     setDinoLose();
+    updateHighScore();
     setTimeout(() => {
         document.addEventListener('keydown', handleStart, { once: true });
         startScreenElem.classList.remove('hide');
