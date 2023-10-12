@@ -1,10 +1,11 @@
-import {getCustomProperty, incrementCustomProperty, setCustomProperty} from "./updateCustomProperty.js";
+import { getCustomProperty, incrementCustomProperty, setCustomProperty } from "./updateCustomProperty.js";
 
 const dinoElem = document.querySelector('[data-dino]');
 const JUMP_SPEED = 0.45;
 const GRAVITY = 0.0015;
 const DINO_FRAME_COUNT = 2;
 const FRAME_TIME = 100;
+const jumpSound = new Audio('assets/jump.mp3');
 
 let isJumping;
 let dinoFrame;
@@ -63,7 +64,7 @@ function handleJump(delta) {
 
 function onJump(e) {
     if (e.code !== "Space" || isJumping) return;
-
     yVelocity = JUMP_SPEED;
+    jumpSound.play();
     isJumping = true;
 }

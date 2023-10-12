@@ -22,8 +22,16 @@ body {
     font-weight: bold;
     font-size: clamp(1rem, 4vmin, 2rem);
     letter-spacing: -0.2em;
+    transition: 2s background-color; 
+    background-color: white;
+    color: black;
 }
 
+.dark {
+    transition: 2s background-color; 
+    background: black;
+    color: white;
+}
 .world {
     overflow: hidden;
     position: relative;
