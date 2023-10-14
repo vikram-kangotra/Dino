@@ -15,6 +15,8 @@ let lastTime;
 let speedScale;
 let highScore;
 let score;
+let isGameActive = false;
+let isTransitioning = false;
 
 setPixelToWorldScale();
 updateHighScore();
@@ -57,6 +59,21 @@ function update(time) {
     window.requestAnimationFrame(update);
 }
 
+function transitionBackground() {
+    if(isGameActive){
+        if(!isTransitioning){
+            isTransitioning = true;
+            document.body.style.transition = 'background-color 0.5s ease-out';
+            document.body.style.background = 'black';
+            setTimeout(() => {
+                document.body.style.backgroundColor = 'white';
+                isTransitioning = false;
+            }, 4000);
+        }
+    }
+}
+setInterval(transitionBackground, 4000);
+
 function checkLose() {
     const dinoRect = getDinoRect();
     return getCactusRects().some(rect => isCollision(rect, dinoRect));
@@ -97,6 +114,7 @@ function handleStart() {
     lastTime = null;
     speedScale = 1;
     score = 0;
+    isGameActive = true;
     setupGround();
     setupDino();
     setupCactus();
