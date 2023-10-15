@@ -1,5 +1,7 @@
 import {getCustomProperty, incrementCustomProperty, setCustomProperty} from "./updateCustomProperty.js";
 
+const jumpsound = new Audio('assets/jump.mp3');
+
 const dinoElem = document.querySelector('[data-dino]');
 const JUMP_SPEED = 0.45;
 const GRAVITY = 0.0015;
@@ -63,7 +65,11 @@ function handleJump(delta) {
 
 function onJump(e) {
     if (e.code !== "Space" || isJumping) return;
-
     yVelocity = JUMP_SPEED;
     isJumping = true;
+    if(isJumping== true){
+        jumpsound.play();
+    }
+
 }
+
