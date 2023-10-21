@@ -1,6 +1,6 @@
 import { setupGround, updateGround } from './ground.js';
-import { getDinoRect, setDinoLose, setupDino, updateDino } from './dino.js';
-import { getCactusRects, setupCactus, updateCactus } from './cactus.js';
+import { getDinoRect, getDinoImage, setDinoLose, setupDino, updateDino } from './dino.js';
+import { getCactusRect, getCactuses, setupCactus, updateCactus } from './cactus.js';
 
 const WORLD_WIDTH = 100;
 const WORLD_HEIGHT = 30;
@@ -65,14 +65,67 @@ function update(time) {
 
 function checkLose() {
     const dinoRect = getDinoRect();
-    return getCactusRects().some(rect => isCollision(rect, dinoRect));
+    const cactuses = getCactuses();
+
+    return cactuses.some(cactus => {
+        const cactusRect = getCactusRect(cactus);
+        const collisionRect = getCollisionRect(dinoRect, cactusRect);
+        if (collisionRect !== null && checkPixelCollision(collisionRect, dinoRect, cactusRect, cactus)) {
+            return true;
+        }
+    });
 }
 
-function isCollision(rect1, rect2) {
-    return rect1.left < rect2.right &&
-        rect1.top < rect2.bottom &&
-        rect1.right > rect2.left &&
-        rect1.bottom > rect2.top;
+function getCollisionRect(dinoRect, cactusRect) {
+
+    const collisionRect = {
+        left: Math.max(dinoRect.left, cactusRect.left),
+        top: Math.max(dinoRect.top, cactusRect.top),
+        right: Math.min(dinoRect.right, cactusRect.right),
+        bottom: Math.min(dinoRect.bottom, cactusRect.bottom),
+    };
+
+    if (collisionRect.left > collisionRect.right || collisionRect.top > collisionRect.bottom) {
+        return null;
+    }
+
+    return collisionRect;
+}
+
+let sharedCanvas = document.createElement('canvas');
+
+function checkPixelCollision(collisionRect, dinoRect, cactusRect, cactusImage) {
+
+    const dinoImage = getDinoImage();
+
+    const width = Math.floor(collisionRect.right - collisionRect.left);
+    const height = Math.floor(collisionRect.bottom - collisionRect.top);
+
+    if (width === 0 || height === 0) {
+        return false;
+    }
+
+    sharedCanvas.width = width;
+    sharedCanvas.height = height;
+    let sharedContext = sharedCanvas.getContext('2d', { willReadFrequently: true }); 
+
+    // Draw Dino
+    sharedContext.clearRect(0, 0, width, height);
+    sharedContext.drawImage(dinoImage, collisionRect.left - dinoRect.left, collisionRect.top - dinoRect.top, width, height, 0, 0, width, height);
+    let dinoImageData = sharedContext.getImageData(0, 0, width, height).data;
+
+    // Draw Cactus
+    sharedContext.clearRect(0, 0, width, height);
+    sharedContext.drawImage(cactusImage, collisionRect.left - cactusRect.left, collisionRect.top - cactusRect.top, width, height, 0, 0, width, height);
+    let cactusImageData = sharedContext.getImageData(0, 0, width, height).data;
+
+    for (let i = 0; i < width * height; i += 4) {
+        if (dinoImageData[i + 3] !== 0 && cactusImageData[i + 3] !== 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function updateSpeedScale(delta) {
@@ -82,7 +135,7 @@ function updateSpeedScale(delta) {
 function updateScore(delta) {
     score += delta * 0.01;
 
-    if (Number.parseInt(score) % 100 == 0 && Number.parseInt(score) != 0) {
+    if (Math.floor(score) % 100 == 0 && Math.floor(score) != 0) {
         checkpoint_sound.play();
     }
 
@@ -113,13 +166,11 @@ function toggleBackground() {
 }
 
 function updateBackground() {
-    if (Number.parseInt(score) % 200 == 0 && Number.parseInt(score) !== prev_score && Number.parseInt(score) > 0) {
+    if (Math.floor(score) % 200 == 0 && Math.floor(score) !== prev_score && Math.floor(score) > 0) {
         toggleBackground();
-        console.log(score);
-        prev_score = Number.parseInt(score);
+        prev_score = Math.floor(score);
     }
 }
-
 
 function handleStart() {
     lastTime = null;
