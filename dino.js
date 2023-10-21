@@ -31,6 +31,10 @@ export function getDinoRect() {
     return dinoElem.getBoundingClientRect();
 }
 
+export function getDinoImage() {
+    return dinoElem;
+}
+
 export function setDinoLose() {
     dinoElem.src = 'assets/dino-lose.png';
 }

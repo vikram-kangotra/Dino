@@ -26,8 +26,12 @@ export function updateCactus(delta, speedScale) {
     nextCactusTime -= delta;
 }
 
-export function getCactusRects() {
-    return [...document.querySelectorAll('[data-cactus]')].map(cactus => cactus.getBoundingClientRect());
+export function getCactusRect(cactus) {
+    return cactus.getBoundingClientRect();
+}
+
+export function getCactuses() {
+    return [...document.querySelectorAll('[data-cactus]')];
 }
 
 function createCactus() {
